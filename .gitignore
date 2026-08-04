@@ -1,0 +1,46 @@
+# Python
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+coverage.xml
+*.log
+
+# Env / secrets
+.env
+.env.*
+!.env.example
+*.pem
+
+# Django
+staticfiles/
+media/
+
+# Node / React
+node_modules/
+frontend/dist/
+frontend/coverage/
+
+# Docker
+*.pid
+
+# Terraform
+infra/**/.terraform/
+infra/**/*.tfstate
+infra/**/*.tfstate.*
+infra/**/*.tfvars
+!infra/**/*.tfvars.example
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# Selenium
+frontend/tests/screenshots/
