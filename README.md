@@ -122,5 +122,36 @@ make lint     # black, isort, flake8, mypy
 
 ## API
 
-Docs interativas: `http://localhost/api/v1/docs/` (Swagger UI) e
-`/api/v1/schema/` (OpenAPI JSON). Ver seção [API](#api) do código para rotas.
+Docs interativas (self-documenting external API — requisito d):
+- Swagger UI: `http://localhost/api/v1/docs/`
+- OpenAPI JSON: `http://localhost/api/v1/schema/`
+
+Todas as rotas sob `/api/v1/`. JWT no header `Authorization: Bearer <access>`.
+
+| Método | Rota | Descrição | Auth |
+|--------|------|-----------|------|
+| POST | `/auth/register/` | Criar conta | — |
+| POST | `/auth/login/` | Obter par JWT (access+refresh) | — |
+| POST | `/auth/refresh/` | Renovar access token | — |
+| GET | `/auth/me/` | Usuário atual | JWT |
+| GET/POST | `/tasks/` | Listar (filtro+paginação) / criar | JWT |
+| GET/PATCH/DELETE | `/tasks/{id}/` | Detalhe / editar / remover | JWT + object-level |
+| PATCH | `/tasks/{id}/status/` | Marcar concluída / não | JWT |
+| POST | `/tasks/{id}/share/` | Compartilhar por e-mail | dono |
+| DELETE | `/tasks/{id}/share/{user_id}/` | Revogar compartilhamento | dono |
+| GET/POST | `/categories/` | Listar / criar categorias | JWT |
+
+**Filtros de tarefa:** `?status=done` · `?category=3` · `?search=texto` ·
+`?ordering=-created_at` · `?due_before=<iso>` · `?page=2&page_size=50`
+
+### Verificação
+
+Stack validada de ponta a ponta via Nginx: registro → login JWT → criar tarefa
+→ listar paginado → compartilhar → e-mail assíncrono entregue pelo Celery.
+Backend: 20 testes pytest, 92% cobertura. Front: typecheck + build + Selenium E2E.
+
+### Deploy
+
+Ver [infra/terraform/README.md](infra/terraform/README.md). Stack de produção:
+`docker compose -f docker-compose.prod.yml up --build -d` (Gunicorn + Nginx +
+SPA compilada).
