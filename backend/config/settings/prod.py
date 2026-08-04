@@ -13,7 +13,8 @@ SECRET_KEY = env("DJANGO_SECRET_KEY")  # no default: fail fast if unset
 ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS")
 
 # --- HTTPS / transport security ---
-SECURE_SSL_REDIRECT = True
+# Default on; can be disabled for an HTTP-only demo box that has no TLS yet.
+SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
 SECURE_HSTS_SECONDS = 31536000  # 1 year
 SECURE_HSTS_INCLUDE_SUBDOMAINS = True

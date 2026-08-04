@@ -20,4 +20,10 @@ PY
 echo "Applying migrations..."
 python manage.py migrate --noinput
 
+# Collect static files in production (served by WhiteNoise).
+if [ "${RUN_COLLECTSTATIC:-0}" = "1" ]; then
+  echo "Collecting static files..."
+  python manage.py collectstatic --noinput
+fi
+
 exec "$@"
