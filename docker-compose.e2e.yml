@@ -1,0 +1,19 @@
+# Overlay for end-to-end tests. Adds a Selenium browser and a test runner that
+# drives the app through Nginx.
+#   docker compose -f docker-compose.yml -f docker-compose.e2e.yml run --rm e2e
+services:
+  selenium:
+    image: selenium/standalone-chromium:129.0
+    shm_size: "2gb"
+    expose:
+      - "4444"
+
+  e2e:
+    build:
+      context: ./e2e
+    environment:
+      E2E_BASE_URL: http://nginx
+      SELENIUM_URL: http://selenium:4444/wd/hub
+    depends_on:
+      - nginx
+      - selenium
