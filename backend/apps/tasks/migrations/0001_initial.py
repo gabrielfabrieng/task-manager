@@ -15,66 +15,137 @@ class Migration(migrations.Migration):
 
     operations = [
         migrations.CreateModel(
-            name='Category',
+            name="Category",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('name', models.CharField(max_length=80)),
-                ('color', models.CharField(default='#6366f1', max_length=7)),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='categories', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("name", models.CharField(max_length=80)),
+                ("color", models.CharField(default="#6366f1", max_length=7)),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="categories",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['name'],
+                "ordering": ["name"],
             },
         ),
         migrations.CreateModel(
-            name='Task',
+            name="Task",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('title', models.CharField(max_length=200)),
-                ('description', models.TextField(blank=True)),
-                ('status', models.CharField(choices=[('pending', 'Pending'), ('done', 'Done')], default='pending', max_length=10)),
-                ('due_date', models.DateTimeField(blank=True, null=True)),
-                ('category', models.ForeignKey(blank=True, null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='tasks', to='tasks.category')),
-                ('owner', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='tasks', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                ("title", models.CharField(max_length=200)),
+                ("description", models.TextField(blank=True)),
+                (
+                    "status",
+                    models.CharField(
+                        choices=[("pending", "Pending"), ("done", "Done")],
+                        default="pending",
+                        max_length=10,
+                    ),
+                ),
+                ("due_date", models.DateTimeField(blank=True, null=True)),
+                (
+                    "category",
+                    models.ForeignKey(
+                        blank=True,
+                        null=True,
+                        on_delete=django.db.models.deletion.SET_NULL,
+                        related_name="tasks",
+                        to="tasks.category",
+                    ),
+                ),
+                (
+                    "owner",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="tasks",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
             options={
-                'ordering': ['-created_at'],
+                "ordering": ["-created_at"],
             },
         ),
         migrations.CreateModel(
-            name='TaskShare',
+            name="TaskShare",
             fields=[
-                ('id', models.BigAutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('created_at', models.DateTimeField(auto_now_add=True)),
-                ('updated_at', models.DateTimeField(auto_now=True)),
-                ('permission', models.CharField(choices=[('view', 'View'), ('edit', 'Edit')], default='view', max_length=4)),
-                ('task', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='shares', to='tasks.task')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, related_name='task_shares', to=settings.AUTH_USER_MODEL)),
+                (
+                    "id",
+                    models.BigAutoField(
+                        auto_created=True, primary_key=True, serialize=False, verbose_name="ID"
+                    ),
+                ),
+                ("created_at", models.DateTimeField(auto_now_add=True)),
+                ("updated_at", models.DateTimeField(auto_now=True)),
+                (
+                    "permission",
+                    models.CharField(
+                        choices=[("view", "View"), ("edit", "Edit")], default="view", max_length=4
+                    ),
+                ),
+                (
+                    "task",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="shares",
+                        to="tasks.task",
+                    ),
+                ),
+                (
+                    "user",
+                    models.ForeignKey(
+                        on_delete=django.db.models.deletion.CASCADE,
+                        related_name="task_shares",
+                        to=settings.AUTH_USER_MODEL,
+                    ),
+                ),
             ],
         ),
         migrations.AddField(
-            model_name='task',
-            name='shared_with',
-            field=models.ManyToManyField(blank=True, related_name='shared_tasks', through='tasks.TaskShare', to=settings.AUTH_USER_MODEL),
+            model_name="task",
+            name="shared_with",
+            field=models.ManyToManyField(
+                blank=True,
+                related_name="shared_tasks",
+                through="tasks.TaskShare",
+                to=settings.AUTH_USER_MODEL,
+            ),
         ),
         migrations.AddConstraint(
-            model_name='category',
-            constraint=models.UniqueConstraint(fields=('owner', 'name'), name='uniq_category_name_per_owner'),
+            model_name="category",
+            constraint=models.UniqueConstraint(
+                fields=("owner", "name"), name="uniq_category_name_per_owner"
+            ),
         ),
         migrations.AddConstraint(
-            model_name='taskshare',
-            constraint=models.UniqueConstraint(fields=('task', 'user'), name='uniq_share_per_user'),
+            model_name="taskshare",
+            constraint=models.UniqueConstraint(fields=("task", "user"), name="uniq_share_per_user"),
         ),
         migrations.AddIndex(
-            model_name='task',
-            index=models.Index(fields=['owner', 'status'], name='tasks_task_owner_i_9240ec_idx'),
+            model_name="task",
+            index=models.Index(fields=["owner", "status"], name="tasks_task_owner_i_9240ec_idx"),
         ),
         migrations.AddIndex(
-            model_name='task',
-            index=models.Index(fields=['due_date'], name='tasks_task_due_dat_bce847_idx'),
+            model_name="task",
+            index=models.Index(fields=["due_date"], name="tasks_task_due_dat_bce847_idx"),
         ),
     ]

@@ -50,18 +50,14 @@ def share_task(*, task: Task, recipient_email: str, permission: str) -> TaskShar
         raise ConflictError("Cannot share a task with its owner.")
 
     try:
-        share = TaskShare.objects.create(
-            task=task, user=recipient, permission=permission
-        )
+        share = TaskShare.objects.create(task=task, user=recipient, permission=permission)
     except IntegrityError as exc:
         raise ConflictError("Task already shared with this user.") from exc
 
     # Import here to avoid a circular import at module load.
     from .tasks import send_share_notification
 
-    transaction.on_commit(
-        lambda: send_share_notification.delay(share_id=share.id)
-    )
+    transaction.on_commit(lambda: send_share_notification.delay(share_id=share.id))
     return share
 
 

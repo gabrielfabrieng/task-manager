@@ -14,5 +14,6 @@ api_v1 = [
 
 urlpatterns = [
     path("admin/", admin.site.urls),
-    path("api/v1/", include((api_v1, "v1"))),
+    # include() accepts (patterns, app_namespace); stubs mistype the tuple.
+    path("api/v1/", include((api_v1, "v1"))),  # type: ignore[arg-type]
 ]

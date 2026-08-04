@@ -21,9 +21,7 @@ def send_share_notification(self, share_id: int) -> None:
     transient mail failures.
     """
     try:
-        share = TaskShare.objects.select_related("task", "task__owner", "user").get(
-            id=share_id
-        )
+        share = TaskShare.objects.select_related("task", "task__owner", "user").get(id=share_id)
     except TaskShare.DoesNotExist:
         logger.warning("share %s vanished before notification", share_id)
         return

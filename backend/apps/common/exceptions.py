@@ -15,8 +15,8 @@ from rest_framework.views import exception_handler as drf_exception_handler
 class DomainError(Exception):
     """Base class for expected, business-rule violations."""
 
-    status_code = status.HTTP_400_BAD_REQUEST
-    default_detail = "Invalid request."
+    status_code: int = status.HTTP_400_BAD_REQUEST
+    default_detail: str = "Invalid request."
 
     def __init__(self, detail: str | None = None) -> None:
         self.detail = detail or self.default_detail

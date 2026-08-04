@@ -6,8 +6,13 @@ enforced at the object level (OWASP API1 — Broken Object Level Authorization).
 
 from __future__ import annotations
 
+from typing import TYPE_CHECKING
+
 from django.conf import settings
 from django.db import models
+
+if TYPE_CHECKING:
+    from apps.accounts.models import User
 
 
 class TimeStampedModel(models.Model):
@@ -29,9 +34,7 @@ class Category(TimeStampedModel):
 
     class Meta:
         constraints = [
-            models.UniqueConstraint(
-                fields=["owner", "name"], name="uniq_category_name_per_owner"
-            )
+            models.UniqueConstraint(fields=["owner", "name"], name="uniq_category_name_per_owner")
         ]
         ordering = ["name"]
 
@@ -56,12 +59,10 @@ class Task(TimeStampedModel):
     )
     title = models.CharField(max_length=200)
     description = models.TextField(blank=True)
-    status = models.CharField(
-        max_length=10, choices=Status.choices, default=Status.PENDING
-    )
+    status = models.CharField(max_length=10, choices=Status.choices, default=Status.PENDING)
     due_date = models.DateTimeField(null=True, blank=True)
 
-    shared_with = models.ManyToManyField(
+    shared_with: models.ManyToManyField[User, TaskShare] = models.ManyToManyField(
         settings.AUTH_USER_MODEL,
         through="TaskShare",
         related_name="shared_tasks",
@@ -94,14 +95,10 @@ class TaskShare(TimeStampedModel):
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL, related_name="task_shares", on_delete=models.CASCADE
     )
-    permission = models.CharField(
-        max_length=4, choices=Permission.choices, default=Permission.VIEW
-    )
+    permission = models.CharField(max_length=4, choices=Permission.choices, default=Permission.VIEW)
 
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=["task", "user"], name="uniq_share_per_user")
-        ]
+        constraints = [models.UniqueConstraint(fields=["task", "user"], name="uniq_share_per_user")]
 
     def __str__(self) -> str:
         return f"{self.task} -> {self.user} ({self.permission})"

@@ -12,9 +12,7 @@ pytestmark = pytest.mark.django_db
 
 
 def test_create_task_sets_owner(auth_client, user):
-    resp = auth_client.post(
-        reverse("v1:task-list"), {"title": "Buy milk"}, format="json"
-    )
+    resp = auth_client.post(reverse("v1:task-list"), {"title": "Buy milk"}, format="json")
     assert resp.status_code == 201
     assert resp.data["owner"] == user.username
     assert Task.objects.get(id=resp.data["id"]).owner_id == user.id
