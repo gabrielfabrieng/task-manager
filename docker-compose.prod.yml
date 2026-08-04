@@ -1,5 +1,6 @@
 # Production-like stack: Gunicorn behind an Nginx gateway serving the built SPA.
 #   docker compose -f docker-compose.prod.yml up --build -d
+name: taskmanager-prod
 services:
   db:
     image: postgres:16-alpine
