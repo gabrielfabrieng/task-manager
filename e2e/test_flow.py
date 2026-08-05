@@ -6,7 +6,6 @@ Exercises the full stack through Nginx: React SPA -> DRF -> Postgres.
 
 from __future__ import annotations
 
-import time
 import uuid
 
 from selenium.webdriver.common.by import By
@@ -42,9 +41,10 @@ def test_register_create_and_complete_task(driver, wait, base_url):
 
     # --- Mark it done ---
     driver.find_element(*_tid("task-toggle")).click()
-    time.sleep(1)  # allow the mutation + refetch to settle
-    item = driver.find_element(By.CSS_SELECTOR, '[data-testid="task-item"]')
-    assert "done" in item.get_attribute("class")
+    # Wait until the mutation lands and the item is re-rendered as done.
+    wait.until(
+        lambda d: "done" in d.find_element(*_tid("task-item")).get_attribute("class")
+    )
 
 
 def test_login_rejects_bad_credentials(driver, wait, base_url):
