@@ -21,6 +21,16 @@ def test_register_creates_user(api_client):
     assert "password" not in resp.data
 
 
+def test_register_stores_email_lowercased(api_client):
+    resp = api_client.post(
+        reverse("v1:register"),
+        {"username": "dave", "email": "Dave@Example.COM", "password": "StrongPass123"},
+        format="json",
+    )
+    assert resp.status_code == 201
+    assert resp.data["email"] == "dave@example.com"
+
+
 def test_register_rejects_weak_password(api_client):
     resp = api_client.post(
         reverse("v1:register"),

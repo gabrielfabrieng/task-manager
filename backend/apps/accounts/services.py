@@ -23,9 +23,11 @@ def register_user(*, username: str, email: str, password: str) -> "User":
 
     Password strength is validated by the serializer (Django validators) before
     this is called; here we only persist and guard uniqueness at the DB level.
+    The e-mail is stored lowercased so the unique constraint is effectively
+    case-insensitive and share lookups by e-mail stay unambiguous.
     """
     try:
-        user = UserModel(username=username, email=email)
+        user = UserModel(username=username, email=email.lower())
         user.set_password(password)  # Argon2 hashing
         user.full_clean(exclude=["password"])
         user.save()
