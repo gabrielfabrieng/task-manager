@@ -7,6 +7,9 @@ export default defineConfig({
   server: {
     host: true,
     port: 5173,
+    // The E2E browser reaches the dev server through the "nginx" hostname;
+    // Vite's host check only allows localhost by default.
+    allowedHosts: ["localhost", "nginx"],
     watch: { usePolling: true }, // reliable file-watching inside Docker on Windows
   },
 });
