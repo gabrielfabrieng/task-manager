@@ -25,6 +25,10 @@ media/
 node_modules/
 frontend/dist/
 frontend/coverage/
+# tsc must never emit next to vite.config.ts — a compiled .js would shadow it
+frontend/vite.config.js
+frontend/vite.config.d.ts
+*.tsbuildinfo
 
 # Docker
 *.pid
