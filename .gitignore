@@ -48,3 +48,6 @@ Thumbs.db
 
 # Selenium
 frontend/tests/screenshots/
+
+# Enunciado do teste (mantido apenas localmente)
+Todo.txt
